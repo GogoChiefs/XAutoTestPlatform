@@ -1,0 +1,2 @@
+logManage是一个DJango APP
+实现日志管理功能
