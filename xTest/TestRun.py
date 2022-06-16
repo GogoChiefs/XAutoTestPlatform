@@ -29,8 +29,8 @@ assertUtil = AssertUtil()
 baseConfig = BaseConfigUtil()
 serverScriptPath = baseConfig.getServerScriptPaht()
 
-
-@pytest.mark.parametrize('caseData', basecode.getCaseDataList("Sheet1"))  # 执行指定用例（从excel读取数据）
+# TODO 将修饰器中的Sheet页名字，修改为动态的，从前端接受
+@pytest.mark.parametrize('caseData', basecode.getCaseDataList("Sheet1"), ids=basecode.getTestcaseNameList("Sheet1"))  # 执行指定用例（从excel读取数据）
 def testRun(caseData):
     caseId = caseData['caseId']
     caseTitle = caseData['caseTitle']

@@ -67,9 +67,10 @@ class ConfigUtilTests(TestCase):
 class BaseCodeTest(TestCase):
     def testBaseCode(self):
         baseCode = BaseCode()
-        caseList = baseCode.getCaseDataList("Sheet1")
-        print(caseList)
-
+        # caseList = baseCode.getCaseDataList("Sheet1")
+        # print(caseList)
+        testcaseNamesStr = baseCode.getTestcaseNameList("Sheet1")
+        print(testcaseNamesStr)
 
 class SSHUtilTest(TestCase):
     def testSSHUtil(self):

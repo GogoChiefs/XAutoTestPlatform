@@ -47,3 +47,25 @@ class BaseCode:
             caseList.append(caseDict)
 
         return caseList
+
+    """
+    按行获取testcase excel中的用例名，并组装成列表
+    """
+
+    def getTestcaseNameList(self, sheetName):
+        testcaseNameStrList = []
+        configFilePath = os.path.abspath(
+            os.path.join(self.rootPath, 'config', 'config.ini'))
+        config = ConfigUtil(configFilePath)
+        testcaseFilePath = os.path.abspath(
+            os.path.join(self.rootPath, config.config.get('platform', 'testcase_path'))
+        )
+        workbook = ExcelUtil(testcaseFilePath)
+        rowCount = workbook.get_rowcount(sheetName)
+
+        for rowNum in range(1, rowCount):
+            caseId = workbook.get_content(sheetName, rowNum, config.config.get("testcase_excel", "case_id"))
+            caseTitle = workbook.get_content(sheetName, rowNum, config.config.get("testcase_excel", "case_title"))
+            testcaseNameStrList.append("caseID: " + str(caseId) + " " + "caseTitle: " + caseTitle)
+
+        return testcaseNameStrList
