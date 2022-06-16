@@ -1,0 +1,821 @@
+ 2022-06-15 09:43:42.505 +00:00+08:00  | INFO | pytest -s /Users/zhangbolun/Documents/PythonProjects/xTestPlatform/xTest/TestRun.py --html=/Users/zhangbolun/Documents/PythonProjects/xTestPlatform/temporary/report.html --self-contained-html
+ 2022-06-15 09:43:45.281 +00:00+08:00  | INFO | stdout is not None
+ 2022-06-15 09:43:45.282 +00:00+08:00  | INFO | stdoutType: <class 'bytes'>
+ 2022-06-15 09:43:45.398 +00:00+08:00  | INFO | stdoutCode: {'encoding': 'utf-8', 'confidence': 0.99, 'language': ''}
+ 2022-06-15 09:43:45.499 +00:00+08:00  | INFO | stdout: ============================= test session starts ==============================
+platform darwin -- Python 3.8.9, pytest-7.1.1, pluggy-1.0.0
+rootdir: /Users/zhangbolun/Documents/PythonProjects/xTestPlatform
+plugins: metadata-2.0.1, allure-pytest-2.9.45, html-3.1.1
+collected 4 items
+
+xTest/TestRun.py startconnect
+Fstartconnect
+Fstartconnect
+Fstartconnect
+F
+
+=================================== FAILURES ===================================
+______________________________ testRun[caseData0] ______________________________
+
+caseData = {'assertType': '相等', 'caseId': 590, 'caseTitle': 'ldapexop -H -W 数据节点', 'caseType': 'Shell', ...}
+
+    @pytest.mark.parametrize('caseData', basecode.getCaseDataList("Sheet1"))  # 执行指定用例（从excel读取数据）
+    def testRun(caseData):
+        caseId = caseData['caseId']
+        caseTitle = caseData['caseTitle']
+        server = caseData['server']
+        port = 22
+        serverUser = caseData['serverUser']
+        serverPasswd = caseData['serverPasswd']
+        scriptFilePath = caseData['script']
+        expectRes = caseData['expectRes']
+    
+        """
+        连接服务器执行用例：
+            1、连接服务器
+            2、在服务器指定目录(config.ini=>server_testscript_path)中建立以用例脚本所在目录的目录名命名的文件夹
+            3、上传用例脚本所在目录中所有文件到服务器刚刚建立的文件夹中
+            4、执行指定的用例脚本，接受返回结果
+            5、删除上传的脚本及目录
+            6、比较返回结果与预期结果
+        """
+    
+        # 1 连接服务器
+        sshutil = SSHUtil(server, port, serverUser, str(serverPasswd))
+>       sshutil.connect()
+
+xTest/TestRun.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+common/SSHUtil.py:26: in connect
+    client.connect(hostname=self.ip, port=self.port, username=self.username, password=self.passwd)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <paramiko.client.SSHClient object at 0x103e4a040>
+hostname = '172.16.196.135', port = 22, username = 'root', password = '111111'
+pkey = None, key_filename = None, timeout = None, allow_agent = True
+look_for_keys = True, compress = False
+sock = <socket.socket fd=19, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('172.16.33.64', 50854)>
+gss_auth = False, gss_kex = False, gss_deleg_creds = True, gss_host = None
+banner_timeout = None, auth_timeout = None, gss_trust_dns = True
+passphrase = None, disabled_algorithms = None
+
+    def connect(
+        self,
+        hostname,
+        port=SSH_PORT,
+        username=None,
+        password=None,
+        pkey=None,
+        key_filename=None,
+        timeout=None,
+        allow_agent=True,
+        look_for_keys=True,
+        compress=False,
+        sock=None,
+        gss_auth=False,
+        gss_kex=False,
+        gss_deleg_creds=True,
+        gss_host=None,
+        banner_timeout=None,
+        auth_timeout=None,
+        gss_trust_dns=True,
+        passphrase=None,
+        disabled_algorithms=None,
+    ):
+        """
+        Connect to an SSH server and authenticate to it.  The server's host key
+        is checked against the system host keys (see `load_system_host_keys`)
+        and any local host keys (`load_host_keys`).  If the server's hostname
+        is not found in either set of host keys, the missing host key policy
+        is used (see `set_missing_host_key_policy`).  The default policy is
+        to reject the key and raise an `.SSHException`.
+    
+        Authentication is attempted in the following order of priority:
+    
+            - The ``pkey`` or ``key_filename`` passed in (if any)
+    
+              - ``key_filename`` may contain OpenSSH public certificate paths
+                as well as regular private-key paths; when files ending in
+                ``-cert.pub`` are found, they are assumed to match a private
+                key, and both components will be loaded. (The private key
+                itself does *not* need to be listed in ``key_filename`` for
+                this to occur - *just* the certificate.)
+    
+            - Any key we can find through an SSH agent
+            - Any "id_rsa", "id_dsa" or "id_ecdsa" key discoverable in
+              ``~/.ssh/``
+    
+              - When OpenSSH-style public certificates exist that match an
+                existing such private key (so e.g. one has ``id_rsa`` and
+                ``id_rsa-cert.pub``) the certificate will be loaded alongside
+                the private key and used for authentication.
+    
+            - Plain username/password auth, if a password was given
+    
+        If a private key requires a password to unlock it, and a password is
+        passed in, that password will be used to attempt to unlock the key.
+    
+        :param str hostname: the server to connect to
+        :param int port: the server port to connect to
+        :param str username:
+            the username to authenticate as (defaults to the current local
+            username)
+        :param str password:
+            Used for password authentication; is also used for private key
+            decryption if ``passphrase`` is not given.
+        :param str passphrase:
+            Used for decrypting private keys.
+        :param .PKey pkey: an optional private key to use for authentication
+        :param str key_filename:
+            the filename, or list of filenames, of optional private key(s)
+            and/or certs to try for authentication
+        :param float timeout:
+            an optional timeout (in seconds) for the TCP connect
+        :param bool allow_agent:
+            set to False to disable connecting to the SSH agent
+        :param bool look_for_keys:
+            set to False to disable searching for discoverable private key
+            files in ``~/.ssh/``
+        :param bool compress: set to True to turn on compression
+        :param socket sock:
+            an open socket or socket-like object (such as a `.Channel`) to use
+            for communication to the target host
+        :param bool gss_auth:
+            ``True`` if you want to use GSS-API authentication
+        :param bool gss_kex:
+            Perform GSS-API Key Exchange and user authentication
+        :param bool gss_deleg_creds: Delegate GSS-API client credentials or not
+        :param str gss_host:
+            The targets name in the kerberos database. default: hostname
+        :param bool gss_trust_dns:
+            Indicates whether or not the DNS is trusted to securely
+            canonicalize the name of the host being connected to (default
+            ``True``).
+        :param float banner_timeout: an optional timeout (in seconds) to wait
+            for the SSH banner to be presented.
+        :param float auth_timeout: an optional timeout (in seconds) to wait for
+            an authentication response.
+        :param dict disabled_algorithms:
+            an optional dict passed directly to `.Transport` and its keyword
+            argument of the same name.
+    
+        :raises:
+            `.BadHostKeyException` -- if the server's host key could not be
+            verified
+        :raises: `.AuthenticationException` -- if authentication failed
+        :raises:
+            `.SSHException` -- if there was any other error connecting or
+            establishing an SSH session
+        :raises socket.error: if a socket error occurred while connecting
+    
+        .. versionchanged:: 1.15
+            Added the ``banner_timeout``, ``gss_auth``, ``gss_kex``,
+            ``gss_deleg_creds`` and ``gss_host`` arguments.
+        .. versionchanged:: 2.3
+            Added the ``gss_trust_dns`` argument.
+        .. versionchanged:: 2.4
+            Added the ``passphrase`` argument.
+        .. versionchanged:: 2.6
+            Added the ``disabled_algorithms`` argument.
+        """
+        if not sock:
+            errors = {}
+            # Try multiple possible address families (e.g. IPv4 vs IPv6)
+            to_try = list(self._families_and_addresses(hostname, port))
+            for af, addr in to_try:
+                try:
+                    sock = socket.socket(af, socket.SOCK_STREAM)
+                    if timeout is not None:
+                        try:
+                            sock.settimeout(timeout)
+                        except:
+                            pass
+                    retry_on_signal(lambda: sock.connect(addr))
+                    # Break out of the loop on success
+                    break
+                except socket.error as e:
+                    # Raise anything that isn't a straight up connection error
+                    # (such as a resolution error)
+                    if e.errno not in (ECONNREFUSED, EHOSTUNREACH):
+                        raise
+                    # Capture anything else so we know how the run looks once
+                    # iteration is complete. Retain info about which attempt
+                    # this was.
+                    errors[addr] = e
+    
+            # Make sure we explode usefully if no address family attempts
+            # succeeded. We've no way of knowing which error is the "right"
+            # one, so we construct a hybrid exception containing all the real
+            # ones, of a subclass that client code should still be watching for
+            # (socket.error)
+            if len(errors) == len(to_try):
+>               raise NoValidConnectionsError(errors)
+E               paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 172.16.196.135
+
+venv/lib/python3.8/site-packages/paramiko/client.py:368: NoValidConnectionsError
+______________________________ testRun[caseData1] ______________________________
+
+caseData = {'assertType': '相等', 'caseId': 591, 'caseTitle': 'ldapexop -H -w 数据节点', 'caseType': 'Shell', ...}
+
+    @pytest.mark.parametrize('caseData', basecode.getCaseDataList("Sheet1"))  # 执行指定用例（从excel读取数据）
+    def testRun(caseData):
+        caseId = caseData['caseId']
+        caseTitle = caseData['caseTitle']
+        server = caseData['server']
+        port = 22
+        serverUser = caseData['serverUser']
+        serverPasswd = caseData['serverPasswd']
+        scriptFilePath = caseData['script']
+        expectRes = caseData['expectRes']
+    
+        """
+        连接服务器执行用例：
+            1、连接服务器
+            2、在服务器指定目录(config.ini=>server_testscript_path)中建立以用例脚本所在目录的目录名命名的文件夹
+            3、上传用例脚本所在目录中所有文件到服务器刚刚建立的文件夹中
+            4、执行指定的用例脚本，接受返回结果
+            5、删除上传的脚本及目录
+            6、比较返回结果与预期结果
+        """
+    
+        # 1 连接服务器
+        sshutil = SSHUtil(server, port, serverUser, str(serverPasswd))
+>       sshutil.connect()
+
+xTest/TestRun.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+common/SSHUtil.py:26: in connect
+    client.connect(hostname=self.ip, port=self.port, username=self.username, password=self.passwd)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <paramiko.client.SSHClient object at 0x103e12dc0>
+hostname = '172.16.196.135', port = 22, username = 'root', password = '111111'
+pkey = None, key_filename = None, timeout = None, allow_agent = True
+look_for_keys = True, compress = False
+sock = <socket.socket fd=20, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('172.16.33.64', 50855)>
+gss_auth = False, gss_kex = False, gss_deleg_creds = True, gss_host = None
+banner_timeout = None, auth_timeout = None, gss_trust_dns = True
+passphrase = None, disabled_algorithms = None
+
+    def connect(
+        self,
+        hostname,
+        port=SSH_PORT,
+        username=None,
+        password=None,
+        pkey=None,
+        key_filename=None,
+        timeout=None,
+        allow_agent=True,
+        look_for_keys=True,
+        compress=False,
+        sock=None,
+        gss_auth=False,
+        gss_kex=False,
+        gss_deleg_creds=True,
+        gss_host=None,
+        banner_timeout=None,
+        auth_timeout=None,
+        gss_trust_dns=True,
+        passphrase=None,
+        disabled_algorithms=None,
+    ):
+        """
+        Connect to an SSH server and authenticate to it.  The server's host key
+        is checked against the system host keys (see `load_system_host_keys`)
+        and any local host keys (`load_host_keys`).  If the server's hostname
+        is not found in either set of host keys, the missing host key policy
+        is used (see `set_missing_host_key_policy`).  The default policy is
+        to reject the key and raise an `.SSHException`.
+    
+        Authentication is attempted in the following order of priority:
+    
+            - The ``pkey`` or ``key_filename`` passed in (if any)
+    
+              - ``key_filename`` may contain OpenSSH public certificate paths
+                as well as regular private-key paths; when files ending in
+                ``-cert.pub`` are found, they are assumed to match a private
+                key, and both components will be loaded. (The private key
+                itself does *not* need to be listed in ``key_filename`` for
+                this to occur - *just* the certificate.)
+    
+            - Any key we can find through an SSH agent
+            - Any "id_rsa", "id_dsa" or "id_ecdsa" key discoverable in
+              ``~/.ssh/``
+    
+              - When OpenSSH-style public certificates exist that match an
+                existing such private key (so e.g. one has ``id_rsa`` and
+                ``id_rsa-cert.pub``) the certificate will be loaded alongside
+                the private key and used for authentication.
+    
+            - Plain username/password auth, if a password was given
+    
+        If a private key requires a password to unlock it, and a password is
+        passed in, that password will be used to attempt to unlock the key.
+    
+        :param str hostname: the server to connect to
+        :param int port: the server port to connect to
+        :param str username:
+            the username to authenticate as (defaults to the current local
+            username)
+        :param str password:
+            Used for password authentication; is also used for private key
+            decryption if ``passphrase`` is not given.
+        :param str passphrase:
+            Used for decrypting private keys.
+        :param .PKey pkey: an optional private key to use for authentication
+        :param str key_filename:
+            the filename, or list of filenames, of optional private key(s)
+            and/or certs to try for authentication
+        :param float timeout:
+            an optional timeout (in seconds) for the TCP connect
+        :param bool allow_agent:
+            set to False to disable connecting to the SSH agent
+        :param bool look_for_keys:
+            set to False to disable searching for discoverable private key
+            files in ``~/.ssh/``
+        :param bool compress: set to True to turn on compression
+        :param socket sock:
+            an open socket or socket-like object (such as a `.Channel`) to use
+            for communication to the target host
+        :param bool gss_auth:
+            ``True`` if you want to use GSS-API authentication
+        :param bool gss_kex:
+            Perform GSS-API Key Exchange and user authentication
+        :param bool gss_deleg_creds: Delegate GSS-API client credentials or not
+        :param str gss_host:
+            The targets name in the kerberos database. default: hostname
+        :param bool gss_trust_dns:
+            Indicates whether or not the DNS is trusted to securely
+            canonicalize the name of the host being connected to (default
+            ``True``).
+        :param float banner_timeout: an optional timeout (in seconds) to wait
+            for the SSH banner to be presented.
+        :param float auth_timeout: an optional timeout (in seconds) to wait for
+            an authentication response.
+        :param dict disabled_algorithms:
+            an optional dict passed directly to `.Transport` and its keyword
+            argument of the same name.
+    
+        :raises:
+            `.BadHostKeyException` -- if the server's host key could not be
+            verified
+        :raises: `.AuthenticationException` -- if authentication failed
+        :raises:
+            `.SSHException` -- if there was any other error connecting or
+            establishing an SSH session
+        :raises socket.error: if a socket error occurred while connecting
+    
+        .. versionchanged:: 1.15
+            Added the ``banner_timeout``, ``gss_auth``, ``gss_kex``,
+            ``gss_deleg_creds`` and ``gss_host`` arguments.
+        .. versionchanged:: 2.3
+            Added the ``gss_trust_dns`` argument.
+        .. versionchanged:: 2.4
+            Added the ``passphrase`` argument.
+        .. versionchanged:: 2.6
+            Added the ``disabled_algorithms`` argument.
+        """
+        if not sock:
+            errors = {}
+            # Try multiple possible address families (e.g. IPv4 vs IPv6)
+            to_try = list(self._families_and_addresses(hostname, port))
+            for af, addr in to_try:
+                try:
+                    sock = socket.socket(af, socket.SOCK_STREAM)
+                    if timeout is not None:
+                        try:
+                            sock.settimeout(timeout)
+                        except:
+                            pass
+                    retry_on_signal(lambda: sock.connect(addr))
+                    # Break out of the loop on success
+                    break
+                except socket.error as e:
+                    # Raise anything that isn't a straight up connection error
+                    # (such as a resolution error)
+                    if e.errno not in (ECONNREFUSED, EHOSTUNREACH):
+                        raise
+                    # Capture anything else so we know how the run looks once
+                    # iteration is complete. Retain info about which attempt
+                    # this was.
+                    errors[addr] = e
+    
+            # Make sure we explode usefully if no address family attempts
+            # succeeded. We've no way of knowing which error is the "right"
+            # one, so we construct a hybrid exception containing all the real
+            # ones, of a subclass that client code should still be watching for
+            # (socket.error)
+            if len(errors) == len(to_try):
+>               raise NoValidConnectionsError(errors)
+E               paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 172.16.196.135
+
+venv/lib/python3.8/site-packages/paramiko/client.py:368: NoValidConnectionsError
+______________________________ testRun[caseData2] ______________________________
+
+caseData = {'assertType': '相等', 'caseId': 592, 'caseTitle': 'ldapexop -h -w 数据节点', 'caseType': 'Shell', ...}
+
+    @pytest.mark.parametrize('caseData', basecode.getCaseDataList("Sheet1"))  # 执行指定用例（从excel读取数据）
+    def testRun(caseData):
+        caseId = caseData['caseId']
+        caseTitle = caseData['caseTitle']
+        server = caseData['server']
+        port = 22
+        serverUser = caseData['serverUser']
+        serverPasswd = caseData['serverPasswd']
+        scriptFilePath = caseData['script']
+        expectRes = caseData['expectRes']
+    
+        """
+        连接服务器执行用例：
+            1、连接服务器
+            2、在服务器指定目录(config.ini=>server_testscript_path)中建立以用例脚本所在目录的目录名命名的文件夹
+            3、上传用例脚本所在目录中所有文件到服务器刚刚建立的文件夹中
+            4、执行指定的用例脚本，接受返回结果
+            5、删除上传的脚本及目录
+            6、比较返回结果与预期结果
+        """
+    
+        # 1 连接服务器
+        sshutil = SSHUtil(server, port, serverUser, str(serverPasswd))
+>       sshutil.connect()
+
+xTest/TestRun.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+common/SSHUtil.py:26: in connect
+    client.connect(hostname=self.ip, port=self.port, username=self.username, password=self.passwd)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <paramiko.client.SSHClient object at 0x103ed4be0>
+hostname = '172.16.196.135', port = 22, username = 'root', password = '111111'
+pkey = None, key_filename = None, timeout = None, allow_agent = True
+look_for_keys = True, compress = False
+sock = <socket.socket fd=21, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('172.16.33.64', 50856)>
+gss_auth = False, gss_kex = False, gss_deleg_creds = True, gss_host = None
+banner_timeout = None, auth_timeout = None, gss_trust_dns = True
+passphrase = None, disabled_algorithms = None
+
+    def connect(
+        self,
+        hostname,
+        port=SSH_PORT,
+        username=None,
+        password=None,
+        pkey=None,
+        key_filename=None,
+        timeout=None,
+        allow_agent=True,
+        look_for_keys=True,
+        compress=False,
+        sock=None,
+        gss_auth=False,
+        gss_kex=False,
+        gss_deleg_creds=True,
+        gss_host=None,
+        banner_timeout=None,
+        auth_timeout=None,
+        gss_trust_dns=True,
+        passphrase=None,
+        disabled_algorithms=None,
+    ):
+        """
+        Connect to an SSH server and authenticate to it.  The server's host key
+        is checked against the system host keys (see `load_system_host_keys`)
+        and any local host keys (`load_host_keys`).  If the server's hostname
+        is not found in either set of host keys, the missing host key policy
+        is used (see `set_missing_host_key_policy`).  The default policy is
+        to reject the key and raise an `.SSHException`.
+    
+        Authentication is attempted in the following order of priority:
+    
+            - The ``pkey`` or ``key_filename`` passed in (if any)
+    
+              - ``key_filename`` may contain OpenSSH public certificate paths
+                as well as regular private-key paths; when files ending in
+                ``-cert.pub`` are found, they are assumed to match a private
+                key, and both components will be loaded. (The private key
+                itself does *not* need to be listed in ``key_filename`` for
+                this to occur - *just* the certificate.)
+    
+            - Any key we can find through an SSH agent
+            - Any "id_rsa", "id_dsa" or "id_ecdsa" key discoverable in
+              ``~/.ssh/``
+    
+              - When OpenSSH-style public certificates exist that match an
+                existing such private key (so e.g. one has ``id_rsa`` and
+                ``id_rsa-cert.pub``) the certificate will be loaded alongside
+                the private key and used for authentication.
+    
+            - Plain username/password auth, if a password was given
+    
+        If a private key requires a password to unlock it, and a password is
+        passed in, that password will be used to attempt to unlock the key.
+    
+        :param str hostname: the server to connect to
+        :param int port: the server port to connect to
+        :param str username:
+            the username to authenticate as (defaults to the current local
+            username)
+        :param str password:
+            Used for password authentication; is also used for private key
+            decryption if ``passphrase`` is not given.
+        :param str passphrase:
+            Used for decrypting private keys.
+        :param .PKey pkey: an optional private key to use for authentication
+        :param str key_filename:
+            the filename, or list of filenames, of optional private key(s)
+            and/or certs to try for authentication
+        :param float timeout:
+            an optional timeout (in seconds) for the TCP connect
+        :param bool allow_agent:
+            set to False to disable connecting to the SSH agent
+        :param bool look_for_keys:
+            set to False to disable searching for discoverable private key
+            files in ``~/.ssh/``
+        :param bool compress: set to True to turn on compression
+        :param socket sock:
+            an open socket or socket-like object (such as a `.Channel`) to use
+            for communication to the target host
+        :param bool gss_auth:
+            ``True`` if you want to use GSS-API authentication
+        :param bool gss_kex:
+            Perform GSS-API Key Exchange and user authentication
+        :param bool gss_deleg_creds: Delegate GSS-API client credentials or not
+        :param str gss_host:
+            The targets name in the kerberos database. default: hostname
+        :param bool gss_trust_dns:
+            Indicates whether or not the DNS is trusted to securely
+            canonicalize the name of the host being connected to (default
+            ``True``).
+        :param float banner_timeout: an optional timeout (in seconds) to wait
+            for the SSH banner to be presented.
+        :param float auth_timeout: an optional timeout (in seconds) to wait for
+            an authentication response.
+        :param dict disabled_algorithms:
+            an optional dict passed directly to `.Transport` and its keyword
+            argument of the same name.
+    
+        :raises:
+            `.BadHostKeyException` -- if the server's host key could not be
+            verified
+        :raises: `.AuthenticationException` -- if authentication failed
+        :raises:
+            `.SSHException` -- if there was any other error connecting or
+            establishing an SSH session
+        :raises socket.error: if a socket error occurred while connecting
+    
+        .. versionchanged:: 1.15
+            Added the ``banner_timeout``, ``gss_auth``, ``gss_kex``,
+            ``gss_deleg_creds`` and ``gss_host`` arguments.
+        .. versionchanged:: 2.3
+            Added the ``gss_trust_dns`` argument.
+        .. versionchanged:: 2.4
+            Added the ``passphrase`` argument.
+        .. versionchanged:: 2.6
+            Added the ``disabled_algorithms`` argument.
+        """
+        if not sock:
+            errors = {}
+            # Try multiple possible address families (e.g. IPv4 vs IPv6)
+            to_try = list(self._families_and_addresses(hostname, port))
+            for af, addr in to_try:
+                try:
+                    sock = socket.socket(af, socket.SOCK_STREAM)
+                    if timeout is not None:
+                        try:
+                            sock.settimeout(timeout)
+                        except:
+                            pass
+                    retry_on_signal(lambda: sock.connect(addr))
+                    # Break out of the loop on success
+                    break
+                except socket.error as e:
+                    # Raise anything that isn't a straight up connection error
+                    # (such as a resolution error)
+                    if e.errno not in (ECONNREFUSED, EHOSTUNREACH):
+                        raise
+                    # Capture anything else so we know how the run looks once
+                    # iteration is complete. Retain info about which attempt
+                    # this was.
+                    errors[addr] = e
+    
+            # Make sure we explode usefully if no address family attempts
+            # succeeded. We've no way of knowing which error is the "right"
+            # one, so we construct a hybrid exception containing all the real
+            # ones, of a subclass that client code should still be watching for
+            # (socket.error)
+            if len(errors) == len(to_try):
+>               raise NoValidConnectionsError(errors)
+E               paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 172.16.196.135
+
+venv/lib/python3.8/site-packages/paramiko/client.py:368: NoValidConnectionsError
+______________________________ testRun[caseData3] ______________________________
+
+caseData = {'assertType': '相等', 'caseId': 593, 'caseTitle': 'ldapexop -h -W 数据节点', 'caseType': 'Shell', ...}
+
+    @pytest.mark.parametrize('caseData', basecode.getCaseDataList("Sheet1"))  # 执行指定用例（从excel读取数据）
+    def testRun(caseData):
+        caseId = caseData['caseId']
+        caseTitle = caseData['caseTitle']
+        server = caseData['server']
+        port = 22
+        serverUser = caseData['serverUser']
+        serverPasswd = caseData['serverPasswd']
+        scriptFilePath = caseData['script']
+        expectRes = caseData['expectRes']
+    
+        """
+        连接服务器执行用例：
+            1、连接服务器
+            2、在服务器指定目录(config.ini=>server_testscript_path)中建立以用例脚本所在目录的目录名命名的文件夹
+            3、上传用例脚本所在目录中所有文件到服务器刚刚建立的文件夹中
+            4、执行指定的用例脚本，接受返回结果
+            5、删除上传的脚本及目录
+            6、比较返回结果与预期结果
+        """
+    
+        # 1 连接服务器
+        sshutil = SSHUtil(server, port, serverUser, str(serverPasswd))
+>       sshutil.connect()
+
+xTest/TestRun.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+common/SSHUtil.py:26: in connect
+    client.connect(hostname=self.ip, port=self.port, username=self.username, password=self.passwd)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <paramiko.client.SSHClient object at 0x103efea30>
+hostname = '172.16.196.135', port = 22, username = 'root', password = '111111'
+pkey = None, key_filename = None, timeout = None, allow_agent = True
+look_for_keys = True, compress = False
+sock = <socket.socket fd=20, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('172.16.33.64', 50857)>
+gss_auth = False, gss_kex = False, gss_deleg_creds = True, gss_host = None
+banner_timeout = None, auth_timeout = None, gss_trust_dns = True
+passphrase = None, disabled_algorithms = None
+
+    def connect(
+        self,
+        hostname,
+        port=SSH_PORT,
+        username=None,
+        password=None,
+        pkey=None,
+        key_filename=None,
+        timeout=None,
+        allow_agent=True,
+        look_for_keys=True,
+        compress=False,
+        sock=None,
+        gss_auth=False,
+        gss_kex=False,
+        gss_deleg_creds=True,
+        gss_host=None,
+        banner_timeout=None,
+        auth_timeout=None,
+        gss_trust_dns=True,
+        passphrase=None,
+        disabled_algorithms=None,
+    ):
+        """
+        Connect to an SSH server and authenticate to it.  The server's host key
+        is checked against the system host keys (see `load_system_host_keys`)
+        and any local host keys (`load_host_keys`).  If the server's hostname
+        is not found in either set of host keys, the missing host key policy
+        is used (see `set_missing_host_key_policy`).  The default policy is
+        to reject the key and raise an `.SSHException`.
+    
+        Authentication is attempted in the following order of priority:
+    
+            - The ``pkey`` or ``key_filename`` passed in (if any)
+    
+              - ``key_filename`` may contain OpenSSH public certificate paths
+                as well as regular private-key paths; when files ending in
+                ``-cert.pub`` are found, they are assumed to match a private
+                key, and both components will be loaded. (The private key
+                itself does *not* need to be listed in ``key_filename`` for
+                this to occur - *just* the certificate.)
+    
+            - Any key we can find through an SSH agent
+            - Any "id_rsa", "id_dsa" or "id_ecdsa" key discoverable in
+              ``~/.ssh/``
+    
+              - When OpenSSH-style public certificates exist that match an
+                existing such private key (so e.g. one has ``id_rsa`` and
+                ``id_rsa-cert.pub``) the certificate will be loaded alongside
+                the private key and used for authentication.
+    
+            - Plain username/password auth, if a password was given
+    
+        If a private key requires a password to unlock it, and a password is
+        passed in, that password will be used to attempt to unlock the key.
+    
+        :param str hostname: the server to connect to
+        :param int port: the server port to connect to
+        :param str username:
+            the username to authenticate as (defaults to the current local
+            username)
+        :param str password:
+            Used for password authentication; is also used for private key
+            decryption if ``passphrase`` is not given.
+        :param str passphrase:
+            Used for decrypting private keys.
+        :param .PKey pkey: an optional private key to use for authentication
+        :param str key_filename:
+            the filename, or list of filenames, of optional private key(s)
+            and/or certs to try for authentication
+        :param float timeout:
+            an optional timeout (in seconds) for the TCP connect
+        :param bool allow_agent:
+            set to False to disable connecting to the SSH agent
+        :param bool look_for_keys:
+            set to False to disable searching for discoverable private key
+            files in ``~/.ssh/``
+        :param bool compress: set to True to turn on compression
+        :param socket sock:
+            an open socket or socket-like object (such as a `.Channel`) to use
+            for communication to the target host
+        :param bool gss_auth:
+            ``True`` if you want to use GSS-API authentication
+        :param bool gss_kex:
+            Perform GSS-API Key Exchange and user authentication
+        :param bool gss_deleg_creds: Delegate GSS-API client credentials or not
+        :param str gss_host:
+            The targets name in the kerberos database. default: hostname
+        :param bool gss_trust_dns:
+            Indicates whether or not the DNS is trusted to securely
+            canonicalize the name of the host being connected to (default
+            ``True``).
+        :param float banner_timeout: an optional timeout (in seconds) to wait
+            for the SSH banner to be presented.
+        :param float auth_timeout: an optional timeout (in seconds) to wait for
+            an authentication response.
+        :param dict disabled_algorithms:
+            an optional dict passed directly to `.Transport` and its keyword
+            argument of the same name.
+    
+        :raises:
+            `.BadHostKeyException` -- if the server's host key could not be
+            verified
+        :raises: `.AuthenticationException` -- if authentication failed
+        :raises:
+            `.SSHException` -- if there was any other error connecting or
+            establishing an SSH session
+        :raises socket.error: if a socket error occurred while connecting
+    
+        .. versionchanged:: 1.15
+            Added the ``banner_timeout``, ``gss_auth``, ``gss_kex``,
+            ``gss_deleg_creds`` and ``gss_host`` arguments.
+        .. versionchanged:: 2.3
+            Added the ``gss_trust_dns`` argument.
+        .. versionchanged:: 2.4
+            Added the ``passphrase`` argument.
+        .. versionchanged:: 2.6
+            Added the ``disabled_algorithms`` argument.
+        """
+        if not sock:
+            errors = {}
+            # Try multiple possible address families (e.g. IPv4 vs IPv6)
+            to_try = list(self._families_and_addresses(hostname, port))
+            for af, addr in to_try:
+                try:
+                    sock = socket.socket(af, socket.SOCK_STREAM)
+                    if timeout is not None:
+                        try:
+                            sock.settimeout(timeout)
+                        except:
+                            pass
+                    retry_on_signal(lambda: sock.connect(addr))
+                    # Break out of the loop on success
+                    break
+                except socket.error as e:
+                    # Raise anything that isn't a straight up connection error
+                    # (such as a resolution error)
+                    if e.errno not in (ECONNREFUSED, EHOSTUNREACH):
+                        raise
+                    # Capture anything else so we know how the run looks once
+                    # iteration is complete. Retain info about which attempt
+                    # this was.
+                    errors[addr] = e
+    
+            # Make sure we explode usefully if no address family attempts
+            # succeeded. We've no way of knowing which error is the "right"
+            # one, so we construct a hybrid exception containing all the real
+            # ones, of a subclass that client code should still be watching for
+            # (socket.error)
+            if len(errors) == len(to_try):
+>               raise NoValidConnectionsError(errors)
+E               paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 172.16.196.135
+
+venv/lib/python3.8/site-packages/paramiko/client.py:368: NoValidConnectionsError
+- generated html file: file:///Users/zhangbolun/Documents/PythonProjects/xTestPlatform/temporary/report.html -
+=========================== short test summary info ============================
+FAILED xTest/TestRun.py::testRun[caseData0] - paramiko.ssh_exception.NoValidC...
+FAILED xTest/TestRun.py::testRun[caseData1] - paramiko.ssh_exception.NoValidC...
+FAILED xTest/TestRun.py::testRun[caseData2] - paramiko.ssh_exception.NoValidC...
+FAILED xTest/TestRun.py::testRun[caseData3] - paramiko.ssh_exception.NoValidC...
+============================== 4 failed in 1.67s ===============================
+
+ 2022-06-15 09:43:45.502 +00:00+08:00  | INFO | stderr is not None
+ 2022-06-15 09:43:45.503 +00:00+08:00  | INFO | stderrType: <class 'bytes'>
+ 2022-06-15 09:43:45.505 +00:00+08:00  | INFO | stderrCode: {'encoding': None, 'confidence': 0.0, 'language': None}
+ 2022-06-15 09:43:45.506 +00:00+08:00  | INFO | stderr: 

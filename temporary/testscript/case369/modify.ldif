@@ -1,0 +1,50 @@
+
+dn: sn=0010,dc=ct
+changetype: modify
+replace: idname
+idname: balabala
+
+dn: sn=0011,dc=ct
+changetype: modify
+replace: idname
+idname: balabala
+
+dn: sn=0012,dc=ct
+changetype: modify
+replace: idname
+idname: balabala
+
+dn: sn=0013,dc=ct
+changetype: modify
+replace: idname
+idname: balabala
+
+dn: sn=0014,dc=ct
+changetype: modify
+replace: idname
+idname: balabala
+
+dn: sn=0015,dc=ct
+changetype: modify
+replace: idname
+idname: balabala
+
+dn: sn=0016,dc=ct
+changetype: modify
+replace: idname
+idname: balabala
+
+dn: sn=0017,dc=ct
+changetype: modify
+replace: idname
+idname: balabala
+
+dn: sn=0018,dc=ct
+changetype: modify
+replace: idname
+idname: balabala
+
+dn: sn=0019,dc=ct
+changetype: modify
+replace: idname
+idname: balabala

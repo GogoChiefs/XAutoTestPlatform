@@ -1,0 +1,34 @@
+dn: sn=0001,dc=ct
+sn: 0001
+idname: lisa
+objectclass: person
+
+dn: sn=0002,dc=ct
+sn: 0002
+idname: lisa
+objectclass: person
+
+dn: sn=0003,dc=ct
+sn: 0003
+idname: lisa
+objectclass: person
+
+dn: sn=0004,dc=ct
+sn: 0004
+idname: tom
+objectclass: person
+
+dn: sn=0005,dc=ct
+sn: 0005
+idname: tom
+objectclass: person
+
+dn: sn=0006,dc=ct
+sn: 0006
+idname: tom1
+objectclass: person
+
+dn: sn=0007,dc=ct
+sn: 0007
+idname: lisa
+objectclass: person

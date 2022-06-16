@@ -1,0 +1,3 @@
+ 2022-06-15 06:16:38.529 +00:00+08:00  | INFO | <QueryDict: {'csrfmiddlewaretoken': ['7pOjED4i8Y8eriRoS2ILXqd3WNaZrDY3Idwgu4XkZd2GZnfxvlY7Smzp6PG4VJFe'], 'testcase_file_name': [''], 'start test': ['START TEST']}>
+ 2022-06-15 06:16:38.529 +00:00+08:00  | INFO | None
+ 2022-06-15 06:16:38.530 +00:00+08:00  | INFO | START TEST

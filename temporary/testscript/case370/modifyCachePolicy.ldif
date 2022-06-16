@@ -1,0 +1,4 @@
+dn: olcDatabase={2}bdb,cn=config
+changetype: modify
+replace: olcDbCachePolicy
+olcDbCachePolicy: 0

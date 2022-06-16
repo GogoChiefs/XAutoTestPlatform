@@ -1,0 +1,4 @@
+ 2022-06-15 06:12:45.023 +00:00+08:00  | INFO | <WSGIRequest: GET '/runtest/'>
+ 2022-06-15 06:12:49.007 +00:00+08:00  | INFO | <WSGIRequest: POST '/runtest/'>
+ 2022-06-15 06:14:13.410 +00:00+08:00  | INFO | <WSGIRequest: POST '/runtest/'>
+ 2022-06-15 06:14:14.832 +00:00+08:00  | INFO | <WSGIRequest: POST '/runtest/'>
