@@ -6,6 +6,8 @@ sh delete.sh  > nohup.out
 #导入自定义测试数据
 ldapadd -c -x -H ldap://127.0.0.1:31001 -D "cn=directory manager,dc=ct" -w secret -f import.ldif > nohup.out
 
-res=`expect exop.sh | sed -n '8p' | sed -e 's/\r//g'`
+res=`expect exop.sh | awk -F ":" '$1=="data" {getline;print $0}' | sed 's/\r//g'`
 
-echo '"'${res}'"'
+sh delete.sh  > nohup.out
+
+echo "\"${res}\""

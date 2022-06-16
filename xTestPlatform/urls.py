@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+# from django.conf.urls import url
+
+# from xTest.views import index as xTestPlatformIndex
+from xTest import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('runtest/', views.index, name='xTest_show'),
+    # url(r'^runtest/$', index),
 ]
